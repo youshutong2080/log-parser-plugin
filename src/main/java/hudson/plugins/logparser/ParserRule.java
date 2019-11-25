@@ -7,27 +7,27 @@ import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
-public class ParserRuleFile extends AbstractDescribableImpl<ParserRuleFile> {
+public class ParserRule extends AbstractDescribableImpl<ParserRule> {
 
     private String name = null;
-    private String path = null;
+    private String rule = null;
 
-    public ParserRuleFile() {
+    public ParserRule() {
         // Empty constructor
     }
 
     @DataBoundConstructor
-    public ParserRuleFile(final String name, final String path) {
+    public ParserRule(final String name, final String rule) {
         this.name = name;
-        this.path = path;
+        this.rule = rule;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getPath() {
-        return path;
+    public String getRule() {
+        return rule;
     }
 
     @DataBoundSetter
@@ -36,11 +36,11 @@ public class ParserRuleFile extends AbstractDescribableImpl<ParserRuleFile> {
     }
 
     @DataBoundSetter
-    public void setPath(final String path) {
-        this.path = path;
+    public void setRule(final String path) {
+        this.rule = rule;
     }
 
     @Extension @Symbol("rule")
-    public static class DescriptorImpl extends Descriptor<ParserRuleFile> {
+    public static class DescriptorImpl extends Descriptor<ParserRule> {
     }
 }

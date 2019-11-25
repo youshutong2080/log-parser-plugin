@@ -43,7 +43,7 @@ public class LogParserParser {
     final private VirtualChannel channel;
     final private boolean preformattedHtml;
 
-    public LogParserParser(final FilePath parsingRulesFile,
+    public LogParserParser(final String parsingRule,
             final boolean preformattedHtml, final VirtualChannel channel)
             throws IOException {
 
@@ -51,7 +51,7 @@ public class LogParserParser {
         final Logger logger = Logger.getLogger(getClass().getName());
 
         this.parsingRulesArray = LogParserUtils
-                .readParsingRules(parsingRulesFile);
+                .readParsingRules(parsingRule);
 
         // This causes each regular expression to be compiled once for better
         // performance

@@ -11,13 +11,13 @@
     <f:checkbox />
   </f:entry>
   <f:radioBlock title="Use global rule" name="log-parser.useProjectRule" value="false" checked="${instance.useProjectRule!=true}" inline="true">
-    <f:entry title="Select Parsing Rules" field="parsingRulesPath" help="/plugin/log-parser/parse_rule_choice.html">
+    <f:entry title="Select Parsing Rules" field="parsingRules" help="/plugin/log-parser/parse_rule_choice.html">
       <f:select />
     </f:entry>
   </f:radioBlock>
   <f:radioBlock title="Use project rule" name="log-parser.useProjectRule" value="true" checked="${instance.useProjectRule==true}" inline="true">
-    <f:entry title="Path to rule file in workspace" field="projectRulePath">
-      <f:textbox />
+    <f:entry title="Project Rule" field="projectRule">
+      <f:textarea />
     </f:entry>
   </f:radioBlock>
 </j:jelly>

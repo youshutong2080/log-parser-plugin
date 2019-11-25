@@ -42,9 +42,9 @@ public class LogParserPublisher extends Recorder implements SimpleBuildStep, Ser
     public boolean unstableOnWarning;
     public boolean failBuildOnError;
     public boolean showGraphs;
-    public String parsingRulesPath = null;
+    public String parsingRules = null;
     public boolean useProjectRule;
-    public String projectRulePath = null;
+    public String projectRule = null;
 
     /**
      * Create new LogParserPublisher.
@@ -52,34 +52,33 @@ public class LogParserPublisher extends Recorder implements SimpleBuildStep, Ser
      * @param unstableOnWarning mark build unstable if warnings found.
      * @param failBuildOnError  mark build failed if errors found.
      * @param showGraphs        show graphs on job page.
-     * @param parsingRulesPath  path to the global parsing rules.
+     * @param parsingRules      the global parsing rule.
      * @param useProjectRule    true if we use a project specific rule.
-     * @param projectRulePath   path to project specific rules relative to
-     *                          workspace root.
+     * @param projectRule       project rule with textarea
      */
     @Deprecated
     private LogParserPublisher(final boolean unstableOnWarning,
                                final boolean failBuildOnError, final boolean showGraphs,
-                               final String parsingRulesPath, final boolean useProjectRule,
-                               final String projectRulePath) {
+                               final String parsingRules, final boolean useProjectRule,
+                               final String projectRule) {
 
         this.unstableOnWarning = unstableOnWarning;
         this.failBuildOnError = failBuildOnError;
         this.showGraphs = showGraphs;
-        this.parsingRulesPath = parsingRulesPath;
+        this.parsingRules = parsingRules;
         this.useProjectRule = useProjectRule;
-        this.projectRulePath = projectRulePath;
+        this.projectRule = projectRule;
     }
 
     @DataBoundConstructor
-    public LogParserPublisher(boolean useProjectRule, String projectRulePath, String parsingRulesPath) {
+    public LogParserPublisher(boolean useProjectRule, String projectRule, String parsingRules) {
         super();
         if (useProjectRule) {
-            this.projectRulePath = Util.fixEmpty(projectRulePath);
-            this.parsingRulesPath = null;
+            this.projectRule = projectRule;
+            this.parsingRules = null;
         } else {
-            this.parsingRulesPath = Util.fixEmpty(parsingRulesPath);
-            this.projectRulePath = null;
+            this.parsingRules = parsingRules;
+            this.projectRule = null;
         }
         this.useProjectRule = useProjectRule;
     }
@@ -108,13 +107,13 @@ public class LogParserPublisher extends Recorder implements SimpleBuildStep, Ser
         try {
             // Create a parser with the parsing rules as configured : colors, regular expressions, etc.
             boolean preformattedHtml = !((DescriptorImpl) getDescriptor()).getLegacyFormatting();
-            final FilePath parsingRulesFile;
+            final String parsingRule;
             if (useProjectRule) {
-                parsingRulesFile = new FilePath(workspace, projectRulePath);
+                parsingRule = projectRule;
             } else {
-                parsingRulesFile = new FilePath(new File(parsingRulesPath));
+                parsingRule = parsingRules;
             }
-            final LogParserParser parser = new LogParserParser(parsingRulesFile, preformattedHtml, launcher.getChannel());
+            final LogParserParser parser = new LogParserParser(parsingRule, preformattedHtml, launcher.getChannel());
             // Parse the build's log according to these rules and get the result
             result = parser.parseLog(build);
 
@@ -156,7 +155,7 @@ public class LogParserPublisher extends Recorder implements SimpleBuildStep, Ser
     public static final class DescriptorImpl extends
             BuildStepDescriptor<Publisher> {
 
-        private List<ParserRuleFile> parsingRulesGlobal = new ArrayList<ParserRuleFile>();
+        private List<ParserRule> parsingRulesGlobal = new ArrayList<ParserRule>();
         private boolean useLegacyFormatting = false;
 
         public DescriptorImpl() {
@@ -180,12 +179,12 @@ public class LogParserPublisher extends Recorder implements SimpleBuildStep, Ser
             return true;
         }
 
-        public List<ParserRuleFile> getParsingRulesGlobal() {
+        public List<ParserRule> getParsingRulesGlobal() {
             return parsingRulesGlobal;
         }
 
         @DataBoundSetter
-        public void setParsingRulesGlobal(List<ParserRuleFile> parsingRulesChoices) {
+        public void setParsingRulesGlobal(List<ParserRule> parsingRulesChoices) {
             this.parsingRulesGlobal = parsingRulesChoices;
         }
 
@@ -208,10 +207,11 @@ public class LogParserPublisher extends Recorder implements SimpleBuildStep, Ser
             return true;
         }
 
-        public ListBoxModel doFillParsingRulesPathItems() {
+        public ListBoxModel doFillParsingRulesItems() {
             ListBoxModel items = new ListBoxModel();
-            for (ParserRuleFile file : parsingRulesGlobal) {
-                items.add(file.getName(), file.getPath());
+            for (ParserRule rule : parsingRulesGlobal) {
+                items.add(rule.getName(), rule.getRule());
+                System.out.printf("%s\n", rule);
             }
             return items;
         }
@@ -226,7 +226,7 @@ public class LogParserPublisher extends Recorder implements SimpleBuildStep, Ser
      * displays the available choices of parsing rules which were configured in
      * the global configurations
      */
-    public List<ParserRuleFile> getParserRuleChoices() {
+    public List<ParserRule> getParserRuleChoices() {
         // Get the descriptor which holds the global configurations and extract
         // the available parsing rules from there
         return ((DescriptorImpl) this.getDescriptor()).getParsingRulesGlobal();
