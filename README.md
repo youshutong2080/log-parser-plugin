@@ -7,6 +7,6 @@ This project based on [log-parser-plugin](https://wiki.jenkins.io/display/JENKIN
 
 ### example
 ![项目配置私有解析规则](https://github.com/youshutong2080/log-parser-plugin/raw/master/images/project_rule_configure.png)       
-![配置通用解析规则](https://github.com/youshutong2080/log-parser-plugin/raw/master/images/system_rules_configure.png.png)        
-![项目配置能用解析规则](https://github.com/youshutong2080/log-parser-plugin/raw/master/images/select_global_rule_configure.png.png)          
+![配置通用解析规则](https://github.com/youshutong2080/log-parser-plugin/raw/master/images/system_rules_configure.png)        
+![项目配置能用解析规则](https://github.com/youshutong2080/log-parser-plugin/raw/master/images/select_global_rule_configure.png)          
 
